@@ -2,49 +2,84 @@
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
-   
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
+// making sure the markup + CSS loads before JavaScript 
+// (altough the script tag is at the end of the body)
+document.addEventListener('DOMContentLoaded', () => {
 
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
+   // declaring students global variable, which holds the value of the list items
+   const students = document.querySelectorAll('.student-item');
+   // declaring itemsPerPage global variable, which holds the maximum items allowed to load on screen
+   const itemsPerPage = 10;
 
+   // creating showPage function to show only the 10 (or less) allowed elements per page
+   const showPage = (list, page) => {
 
+      // creating startIndex variable to hold the 10 items per page
+      const startIndex = (page * itemsPerPage) - itemsPerPage;
+      // creating endIndex variable to hold the remaining items on the last page
+      const endIndex = page * itemsPerPage;
 
-
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
-
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
-
-
-
-
+      // looping over the students array
+      for (let i = 0; i < list.length; i++) {
+         
+         // display `li` tags if its index is >= than startIndex && < endIndex
+         if (startIndex <= i && endIndex > i) {      
+            list[i].style.display = 'block';
+         } else {
+            list[i].style.display = 'none';
+         }
+         
+      }
+   }
 /*** 
    Create the `appendPageLinks function` to generate, append, and add 
    functionality to the pagination buttons.
 ***/
+   function appendPageLinks(list) {
+      
+      const maxNumberOfPages = Math.ceil(list.length / itemsPerPage);
+      const pageDiv = document.querySelector('.page');
+      
+      const paginationDiv = document.createElement('div');
+      paginationDiv.classList.add('pagination');
+      pageDiv.appendChild(paginationDiv);
 
+      const ul = document.createElement('ul');
+      paginationDiv.appendChild(ul);
 
+      for (let j = 1; j <= maxNumberOfPages; j++) {
 
+         const li = document.createElement('li');
+         const a = document.createElement('a');
 
+         a.href= '#'
+         a.textContent = `${j}`;
+         a.className = 'active';
+  
+         li.appendChild(a);
+         ul.appendChild(li);
+      }
 
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+      const anchors = document.querySelectorAll('.pagination a')
+
+      for (let i = 0; i < anchors.length; i++) {
+         anchors[i].classList.remove('active');
+
+         anchors[i].addEventListener('click', (e) => { 
+
+            if (anchors[i]) {
+               showPage(list, parseInt(anchors[i].textContent));
+               if (e.target) {
+                  e.target.className = 'active';
+               } else {
+                  e.target.className = '';
+               }
+            }
+         });
+      }
+   }
+
+   showPage(students, 1);
+   appendPageLinks(students);
+});
