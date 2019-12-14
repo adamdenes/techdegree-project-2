@@ -4,7 +4,7 @@ FSJS project 2 - List Filter and Pagination
 ******************************************/
 
 // making sure the markup + CSS loads before JavaScript 
-// (altough the script tag is at the end of the body)
+// (although the script tag is at the end of the body)
 document.addEventListener('DOMContentLoaded', () => {
 
    // declaring students global variable, which holds the value of the list items
@@ -26,16 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
          // display `li` tags if its index is >= than startIndex && < endIndex
          if (startIndex <= i && endIndex > i) {      
             list[i].style.display = 'block';
+            // hide everything else on the page
          } else {
             list[i].style.display = 'none';
          }
          
       }
    }
-/*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
-***/
+   // Create the `appendPageLinks function` to generate, append, and add 
+   // functionality to the pagination buttons.
    function appendPageLinks(list) {
       
       const maxNumberOfPages = Math.ceil(list.length / itemsPerPage);
@@ -48,34 +47,38 @@ document.addEventListener('DOMContentLoaded', () => {
       const ul = document.createElement('ul');
       paginationDiv.appendChild(ul);
 
-      for (let j = 1; j <= maxNumberOfPages; j++) {
+      for (let j = 0; j < maxNumberOfPages; j++) {
 
          const li = document.createElement('li');
          const a = document.createElement('a');
 
          a.href= '#'
-         a.textContent = `${j}`;
+         a.textContent = `${j + 1}`;
          a.className = 'active';
   
          li.appendChild(a);
          ul.appendChild(li);
-      }
+         
+         const anchors = document.querySelectorAll('.pagination a')
 
-      const anchors = document.querySelectorAll('.pagination a')
+         anchors[j].classList.remove('active');
+         anchors[0].className = 'active';
 
-      for (let i = 0; i < anchors.length; i++) {
-         anchors[i].classList.remove('active');
+         anchors[j].addEventListener('click', (e) => {
 
-         anchors[i].addEventListener('click', (e) => { 
+            for (let k = 0; k < anchors.length; k++) {
+               let element = anchors[k];
 
-            if (anchors[i]) {
-               showPage(list, parseInt(anchors[i].textContent));
-               if (e.target) {
-                  e.target.className = 'active';
-               } else {
-                  e.target.className = '';
+               while (element) {
+                  if (element.tagName === 'A') {
+                     element.classList.remove('active');
+                     element = element.nextElementSibling;
+                  } 
                }
             }
+            e.target.classList.add('active');
+            
+            showPage(list, parseInt(e.target.textContent));
          });
       }
    }
