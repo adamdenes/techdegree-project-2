@@ -54,30 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
          a.href= '#'
          a.textContent = `${j + 1}`;
-         a.className = 'active';
+         j === 0 ? a.className = 'active' : null;
   
          li.appendChild(a);
          ul.appendChild(li);
-         
-         const anchors = document.querySelectorAll('.pagination a')
-
-         anchors[j].classList.remove('active');
-         anchors[0].className = 'active';
-
-         anchors[j].addEventListener('click', (e) => {
+           
+         a.addEventListener('click', (e) => {
+            const anchors = document.querySelectorAll('.pagination a');
 
             for (let k = 0; k < anchors.length; k++) {
-               let element = anchors[k];
-
-               while (element) {
-                  if (element.tagName === 'A') {
-                     element.classList.remove('active');
-                     element = element.nextElementSibling;
-                  } 
-               }
+               anchors[k].classList.remove('active');
             }
             e.target.classList.add('active');
-            
             showPage(list, parseInt(e.target.textContent));
          });
       }
